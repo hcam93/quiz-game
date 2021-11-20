@@ -6,7 +6,7 @@ This simple game works from a command line prompt (only unix based systems, sorr
 
 Add quizes in quiz_promblems folder that are two columns:
 
-Question, Answer.
+Question, Answer <- format
 
 There is currently a timer that will quit at 30 seconds. I was able to use
 
