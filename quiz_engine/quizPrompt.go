@@ -73,13 +73,14 @@ func runQuiz(quiz_name string, workDir string) {
 	filePath := workDir +"/"+ quiz_name
 	file, err := os.Open(filePath)
 	handleError(err)
+	defer file.Close()
 	csvFile := csv.NewReader(file);
-	timeoutChannel := make(chan bool)
+	answerChannel := make(chan bool)
 	go func(){
 		for {
 		record, err := csvFile.Read()
 			if err == io.EOF {
-				timeoutChannel <- true
+				answerChannel <- true
 			}
 		question := record[0]
 		answer := record[1]
@@ -96,7 +97,7 @@ func runQuiz(quiz_name string, workDir string) {
 	case <- time.After(time.Second * 30):
 		fmt.Println("TIMEOUT")
 		problemNumber += countCSV(csvFile)
-	case <- timeoutChannel:
+	case <- answerChannel:
 		fmt.Println("You scored " + strconv.Itoa(score) + " out of " + strconv.Itoa(problemNumber))
 		os.Exit(0);
 		
